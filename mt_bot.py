@@ -61,26 +61,10 @@ def test(message):
 
 
 
-# @bot.message_handler(commands=['check'])
-# def check_katka(message):
-#     i = 0
-#     while True:
-#         try:
-#             r = requests.get('http://192.168.12.181:42000/getstat')
-        
-#         except ConnectionError:
-#             bot.send_message(message.chat.id, "Катка подохла")
-
-#         i+=1
-#         sleep(5)
-
-#         if i > 5:
-#             break
-
 
 @bot.message_handler(commands=['status'])
 def handle_status(message):
-    data = 'iperf -c 192.168.12.181 -p 3389 -t1'
+    data = 'iperf -c 192.168.62.65 -p 3389 -t1'
     stdout = Popen(data, shell=True, stdout=PIPE).stdout
     if stdout.read() != '':
         bot.send_message(message.chat.id, "Катка в порядке")
