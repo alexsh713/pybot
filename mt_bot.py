@@ -75,7 +75,7 @@ def handle_status(message):
 @bot.message_handler(commands=['periodic_check'])
 def handle_periodic_check(message):
     bot.send_message(message.chat.id, "Ага, запустил")
-    data = 'iperf -c 192.168.12.181 -p 3389 -t1'
+    data = 'iperf -c 192.168.62.65 -p 3389 -t1'
     count = 0
     while True:
         stdout = Popen(data, shell=True, stdout=PIPE).stdout
