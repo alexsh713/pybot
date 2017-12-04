@@ -7,6 +7,7 @@ from time import sleep
 from bittrex import Bittrex
 from requests.exceptions import ConnectionError
 from time import sleep
+from subprocess import Popen, PIPE
 
 bot = telebot.TeleBot(config.token)
 
@@ -60,22 +61,48 @@ def test(message):
 
 
 
-@bot.message_handler(commands=['check'])
-def check_katka(message):
-    i = 0
-    while True:
-        try:
-            r = requests.get('http://192.168.12.181:42000/getstat')
+# @bot.message_handler(commands=['check'])
+# def check_katka(message):
+#     i = 0
+#     while True:
+#         try:
+#             r = requests.get('http://192.168.12.181:42000/getstat')
         
-        except ConnectionError:
+#         except ConnectionError:
+#             bot.send_message(message.chat.id, "Катка подохла")
+
+#         i+=1
+#         sleep(5)
+
+#         if i > 5:
+#             break
+
+
+@bot.message_handler(commands=['status'])
+def handle_status(message):
+    data = 'iperf -c 192.168.12.181 -p 3389 -t1'
+    stdout = Popen(data, shell=True, stdout=PIPE).stdout
+    if stdout.read() != '':
+        bot.send_message(message.chat.id, "Катка в порядке")
+    else:
+        bot.send_message(message.chat.id, "Какая-то хуета с каткой")
+
+
+@bot.message_handler(commands=['periodic_check'])
+def handle_periodic_check(message):
+    bot.send_message(message.chat.id, "Ага, запустил")
+    data = 'iperf -c 192.168.12.181 -p 3389 -t1'
+    count = 0
+    while True:
+        stdout = Popen(data, shell=True, stdout=PIPE).stdout
+        if stdout.read() == '':
             bot.send_message(message.chat.id, "Катка подохла")
-
-        i+=1
-        sleep(5)
-
-        if i > 5:
+            count+=1
+        sleep(300)
+        if count > 5:
+            bot.send_message(message.chat.id, "Стоп проверка, катка подохла.")
             break
-
+            
 
 
 
