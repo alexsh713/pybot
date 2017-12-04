@@ -1,0 +1,9 @@
+bin/
+include/
+lib/
+local/
+auth.py
+config.py
+*.pyc
+*.py~
+
